@@ -1,6 +1,10 @@
 package lexer
 
-import "github.com/jibrankalia/monkeylang/token"
+import (
+	"errors"
+
+	"github.com/jibrankalia/monkeylang/token"
+)
 
 type Lexer struct {
 	input        string
@@ -23,6 +27,15 @@ func (l *Lexer) readChar() {
 	}
 	l.position = l.readPosition
 	l.readPosition += 1
+}
+
+func (l *Lexer) backTrackIndex() error {
+	if l.position < 1 {
+		return errors.New("Cannot backtrack")
+	}
+	l.readPosition = l.position
+	l.position -= 1
+	return nil
 }
 
 func (l *Lexer) NextToken() token.Token {
@@ -53,7 +66,9 @@ func (l *Lexer) NextToken() token.Token {
 		if isLetter(l.ch) {
 			tok.Literal = l.readIdentifier()
 			tok.Type = token.LookupIdent(tok.Literal)
-			return tok
+		} else if isDigit(l.ch) {
+			tok.Literal = l.readNumber()
+			tok.Type = token.INT
 		} else {
 			tok = newToken(token.ILLEGAL, l.ch)
 		}
@@ -73,7 +88,19 @@ func (l *Lexer) readIdentifier() string {
 	for isLetter(l.ch) {
 		l.readChar()
 	}
-	return l.input[initial_position:l.position]
+	identifier := l.input[initial_position:l.position]
+	l.backTrackIndex()
+	return identifier
+}
+
+func (l *Lexer) readNumber() string {
+	initial_position := l.position
+	for isDigit(l.ch) {
+		l.readChar()
+	}
+	number := l.input[initial_position:l.position]
+	l.backTrackIndex()
+	return number
 }
 
 func (l *Lexer) skipWhitespace() {
@@ -84,4 +111,8 @@ func (l *Lexer) skipWhitespace() {
 
 func isLetter(ch byte) bool {
 	return 'a' <= ch && ch <= 'z' || 'A' <= ch && ch <= 'Z' || ch == '_'
+}
+
+func isDigit(ch byte) bool {
+	return '0' <= ch && ch <= '9'
 }
