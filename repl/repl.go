@@ -1,6 +1,7 @@
 package repl
 
 import (
+	"bufio"
 	"fmt"
 	"io"
 
@@ -14,7 +15,7 @@ import (
 const PROMPT = ">> "
 
 func Start(in io.Reader, out io.Writer) {
-	scanner := buffer.NewScanner(in)
+	scanner := bufio.NewScanner(in)
 
 	for {
 		fmt.Fprintf(out, PROMPT)
