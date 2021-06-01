@@ -7,21 +7,23 @@ import (
 )
 
 func TestNextToken(t *testing.T) {
-	input := `let five = 5;
-let ten = 10;
-let add = fn(x, y) {
-	x + y;
-};
+	input := `five = 5
+ten = 10
 
-let result = add(five, ten);
-!-/*5;
-5 < 10 > 5;
+def add(x, y) do
+	x + y
+end
+
+result = add(five, ten)
+
+!-/*5
+5 < 10 > 5
 
 ==
 !=
 
-10 == 10;
-10 != 9;
+10 == 10
+10 != 9
 `
 	// if (5 < 10) {
 	// 	return true;
@@ -33,33 +35,31 @@ let result = add(five, ten);
 		expectedType    token.TokenType
 		expectedLiteral string
 	}{
-		{token.LET, "let"},
 		{token.IDENT, "five"},
 		{token.ASSIGN, "="},
 		{token.INT, "5"},
-		{token.SEMICOLON, ";"},
-		{token.LET, "let"},
+		{token.NEWLINE, "\n"},
 		{token.IDENT, "ten"},
 		{token.ASSIGN, "="},
 		{token.INT, "10"},
-		{token.SEMICOLON, ";"},
-		{token.LET, "let"},
+		{token.NEWLINE, "\n"},
+		{token.NEWLINE, "\n"},
+		{token.DEF, "def"},
 		{token.IDENT, "add"},
-		{token.ASSIGN, "="},
-		{token.FUNCTION, "fn"},
 		{token.LPAREN, "("},
 		{token.IDENT, "x"},
 		{token.COMMA, ","},
 		{token.IDENT, "y"},
 		{token.RPAREN, ")"},
-		{token.LBRACE, "{"},
+		{token.DO, "do"},
+		{token.NEWLINE, "\n"},
 		{token.IDENT, "x"},
 		{token.PLUS, "+"},
 		{token.IDENT, "y"},
-		{token.SEMICOLON, ";"},
-		{token.RBRACE, "}"},
-		{token.SEMICOLON, ";"},
-		{token.LET, "let"},
+		{token.NEWLINE, "\n"},
+		{token.END, "end"},
+		{token.NEWLINE, "\n"},
+		{token.NEWLINE, "\n"},
 		{token.IDENT, "result"},
 		{token.ASSIGN, "="},
 		{token.IDENT, "add"},
@@ -68,20 +68,23 @@ let result = add(five, ten);
 		{token.COMMA, ","},
 		{token.IDENT, "ten"},
 		{token.RPAREN, ")"},
-		{token.SEMICOLON, ";"},
+		{token.NEWLINE, "\n"},
+		{token.NEWLINE, "\n"},
 		{token.BANG, "!"},
 		{token.MINUS, "-"},
 		{token.SLASH, "/"},
 		{token.ASTERISK, "*"},
 		{token.INT, "5"},
-		{token.SEMICOLON, ";"},
+		{token.NEWLINE, "\n"},
 		{token.INT, "5"},
 		{token.LT, "<"},
 		{token.INT, "10"},
 		{token.GT, ">"},
 		{token.INT, "5"},
-		{token.SEMICOLON, ";"},
+		{token.NEWLINE, "\n"},
+		{token.NEWLINE, "\n"},
 		{token.EQ, "=="},
+		{token.NEWLINE, "\n"},
 		{token.NOT_EQ, "!="},
 		// {token.IF, "if"},
 		// {token.LPAREN, "("},
@@ -100,15 +103,16 @@ let result = add(five, ten);
 		// {token.FALSE, "false"},
 		// {token.SEMICOLON, ";"},
 		// {token.RBRACE, "}"},
+		{token.NEWLINE, "\n"},
+		{token.NEWLINE, "\n"},
 		{token.INT, "10"},
 		{token.EQ, "=="},
 		{token.INT, "10"},
-		{token.SEMICOLON, ";"},
+		{token.NEWLINE, "\n"},
 		{token.INT, "10"},
 		{token.NOT_EQ, "!="},
 		{token.INT, "9"},
-		{token.SEMICOLON, ";"},
-		{token.EOF, ""},
+		{token.NEWLINE, "\n"},
 		{token.EOF, ""},
 	}
 

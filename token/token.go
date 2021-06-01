@@ -26,30 +26,32 @@ const (
 
 	EQ     = "=="
 	NOT_EQ = "!="
+
 	// Delimiters
-	COMMA     = ","
-	SEMICOLON = ";"
-	LPAREN    = "("
-	RPAREN    = ")"
-	LBRACE    = "{"
-	RBRACE    = "}"
+	COMMA   = ","
+	LPAREN  = "("
+	RPAREN  = ")"
+	NEWLINE = "\n"
+
 	// Keywords
-	FUNCTION = "FUNCTION"
-	LET      = "LET"
-	TRUE     = "TRUE"
-	FALSE    = "FALSE"
-	IF       = "IF"
-	ELSE     = "ELSE"
-	RETURN   = "RETURN"
+	DEF    = "DEF"
+	DO     = "DO"
+	END    = "END"
+	TRUE   = "TRUE"
+	FALSE  = "FALSE"
+	IF     = "IF"
+	ELSE   = "ELSE"
+	RETURN = "RETURN"
 )
 
 var keywords = map[string]TokenType{
-	"fn":  FUNCTION,
-	"let": LET,
+	"do":  DO,
+	"end": END,
+	"def": DEF,
 }
 
 func LookupIdent(identifier string) TokenType {
-	if tok, ok := keywords[identifier]; ok {
+	if tok, found := keywords[identifier]; found {
 		return tok
 	}
 	return IDENT
