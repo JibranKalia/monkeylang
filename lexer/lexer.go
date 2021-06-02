@@ -92,9 +92,11 @@ func (l *Lexer) NextToken() token.Token {
 		if isLetter(l.ch) {
 			tok.Literal = l.readIdentifier()
 			tok.Type = token.LookupIdent(tok.Literal)
+			return tok
 		} else if isDigit(l.ch) {
 			tok.Literal = l.readNumber()
 			tok.Type = token.INT
+			return tok
 		} else {
 			tok = newToken(token.ILLEGAL, l.ch)
 		}
@@ -124,9 +126,7 @@ func (l *Lexer) readIdentifier() string {
 	for isLetter(l.ch) {
 		l.readChar()
 	}
-	identifier := l.input[initial_position:l.position]
-	l.backTrackIndex()
-	return identifier
+	return l.input[initial_position:l.position]
 }
 
 func (l *Lexer) readNumber() string {
@@ -134,9 +134,7 @@ func (l *Lexer) readNumber() string {
 	for isDigit(l.ch) {
 		l.readChar()
 	}
-	number := l.input[initial_position:l.position]
-	l.backTrackIndex()
-	return number
+	return l.input[initial_position:l.position]
 }
 
 func (l *Lexer) skipWhitespace() {
