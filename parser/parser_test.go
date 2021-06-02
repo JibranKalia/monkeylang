@@ -9,9 +9,9 @@ import (
 
 func TestLetStatements(t *testing.T) {
 	input := `
-let x = 5;
-let y = 10;
-let foobar = 838383;
+x = 5;
+y = 10;
+foobar = 838383;
 `
 
 	l := lexer.New(input)
@@ -38,31 +38,31 @@ let foobar = 838383;
 
 	for i, test := range tests {
 		stmt := program.Statements[i]
-		if !testLetStatement(t, stmt, test.expectedIdentifier) {
+		if !testAssignStatement(t, stmt, test.expectedIdentifier) {
 			return
 		}
 	}
 }
 
-func testLetStatement(t *testing.T, s ast.Statement, name string) bool {
-	if s.TokenLiteral() != "let" {
-		t.Errorf("s.TokenLiteral not 'let'. got=%q", s.TokenLiteral())
+func testAssignStatement(t *testing.T, s ast.Statement, name string) bool {
+	if s.TokenLiteral() != "=" {
+		t.Errorf("s.TokenLiteral not '='. got=%q", s.TokenLiteral())
 		return false
 	}
 
-	letStmt, ok := s.(*ast.LetStatement)
+	assignStmt, ok := s.(*ast.AssignStatement)
 	if !ok {
-		t.Errorf("s not *ast.LetStatement. got=%T", s)
+		t.Errorf("s not *ast.AssignStatement. got=%T", s)
 		return false
 	}
-	if letStmt.Name.Value != name {
-		t.Errorf("letStmt.Name.Value not '%s'. got=%s", name, letStmt.Name.Value)
+	if assignStmt.Name.Value != name {
+		t.Errorf("assignStmt.Name.Value not '%s'. got=%s", name, assignStmt.Name.Value)
 		return false
 	}
 
-	if letStmt.Name.TokenLiteral() != name {
-		t.Errorf("letStmt.Name.TokenLiteral() not '%s'. got=%s",
-			name, letStmt.Name.TokenLiteral())
+	if assignStmt.Name.TokenLiteral() != name {
+		t.Errorf("assignStmt.Name.TokenLiteral() not '%s'. got=%s",
+			name, assignStmt.Name.TokenLiteral())
 		return false
 	}
 	return true

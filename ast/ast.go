@@ -20,16 +20,16 @@ type Program struct {
 	Statements []Statement
 }
 
-type LetStatement struct {
-	Token token.Token // token .LET
+type AssignStatement struct {
+	Token token.Token // token .ASSIGN
 	Name  *Identifier
 	Value Expression
 }
 
 // statetment newToken
-func (ls *LetStatement) statementNode() {}
+func (ls *AssignStatement) statementNode() {}
 
-func (ls *LetStatement) TokenLiteral() string { return ls.Token.Literal }
+func (ls *AssignStatement) TokenLiteral() string { return ls.Token.Literal }
 
 // Expression interface
 type Identifier struct {

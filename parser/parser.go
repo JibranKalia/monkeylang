@@ -16,9 +16,6 @@ type Parser struct {
 func New(l *lexer.Lexer) *Parser {
 	p := &Parser{l: l}
 
-	p.nextToken()
-	p.nextToken()
-
 	return p
 }
 
@@ -27,23 +24,20 @@ func (p *Parser) nextToken() {
 	p.peekToken = p.l.NextToken()
 }
 
-func (p *Parser) parseLetStatement() *ast.LetStatement {
-	stmt := &ast.LetStatement{Token: p.curToken}
-
-	if !p.moveIfPeekIs(token.IDENT) {
+func (p *Parser) parseAssignStatement() *ast.AssignStatement {
+	if !p.peekTokenIs(token.ASSIGN) {
+		// todo raise error
 		return nil
 	}
+
+	stmt := &ast.AssignStatement{Token: p.peekToken}
 
 	stmt.Name = &ast.Identifier{Token: p.curToken, Value: p.curToken.Literal}
 
-	if !p.moveIfPeekIs(token.ASSIGN) {
-		return nil
-	}
-
 	// TODO: We're skipping the expressions until we
-	// encounter a semicolon
+	// encounter a newline
 
-	for !p.curTokenIs(token.SEMICOLON) {
+	for !p.curTokenIs(token.NEWLINE) {
 		p.nextToken()
 	}
 
@@ -53,8 +47,15 @@ func (p *Parser) parseLetStatement() *ast.LetStatement {
 
 func (p *Parser) parseStatement() ast.Statement {
 	switch p.curToken.Type {
-	case token.LET:
-		return p.parseLetStatement()
+	case token.IDENT:
+		if p.peekToken.Type == token.ASSIGN {
+			return p.parseAssignStatement()
+
+		} else {
+			// TODO: handle else case
+			return nil
+		}
+
 	default:
 		return nil
 	}
@@ -63,6 +64,10 @@ func (p *Parser) parseStatement() ast.Statement {
 func (p *Parser) ParseProgram() *ast.Program {
 	program := &ast.Program{}
 	program.Statements = []ast.Statement{}
+
+	// populate currToken and peekToken
+	p.nextToken()
+	p.nextToken()
 
 	for p.curToken.Type != token.EOF {
 		stmt := p.parseStatement()
