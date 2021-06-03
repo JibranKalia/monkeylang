@@ -1,6 +1,8 @@
 package parser
 
 import (
+	"fmt"
+
 	"github.com/jibrankalia/monkeylang/ast"
 	"github.com/jibrankalia/monkeylang/lexer"
 	"github.com/jibrankalia/monkeylang/token"
@@ -11,12 +13,25 @@ type Parser struct {
 
 	curToken  token.Token
 	peekToken token.Token
+	errors    []string
 }
 
 func New(l *lexer.Lexer) *Parser {
-	p := &Parser{l: l}
+	p := &Parser{l: l,
+		errors: []string{},
+	}
 
 	return p
+}
+
+func (p *Parser) Errors() []string {
+	return p.errors
+}
+
+func (p *Parser) peekError(t token.TokenType) {
+	msg := fmt.Sprintf("expected next token to be %s, go %s instead",
+		t, p.peekToken.Type)
+	p.errors = append(p.errors, msg)
 }
 
 func (p *Parser) nextToken() {
@@ -26,7 +41,7 @@ func (p *Parser) nextToken() {
 
 func (p *Parser) parseAssignStatement() *ast.AssignStatement {
 	if !p.peekTokenIs(token.ASSIGN) {
-		// todo raise error
+		p.peekError(token.ASSIGN)
 		return nil
 	}
 
